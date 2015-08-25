@@ -6,6 +6,7 @@ var server = express();
 var morgan = require('morgan');
 var fs = require('fs');
 var path = require('path');
+var rubbertiger = require('rubbertiger');
 
 var port = process.env.PAPERDUCKY_PORT || 3000;
 var env = process.env.PAPERDUCKY_ENV || 'development';
@@ -27,7 +28,7 @@ var initScrapers = function(cb) {
   files.forEach(function(file) {
     var data = fs.readFileSync(path.resolve(scraperDir,file), 'utf8');
 
-    scrapers[file.substr(0, file.indexOf('.json'))] = data;
+    scrapers[file.substr(0, file.indexOf('.json'))] = JSON.parse(data);
   });
 
   cb();
@@ -38,8 +39,16 @@ initScrapers(function() {
   console.log('Scrapers initialized.');
 });
 
-server.get("/list", function (req, res) {
-  res.json(scrapers);
+server.get("/api/describe", function (req, res) {
+  res.send(JSON.stringify(scrapers,null,2));
+});
+
+server.get("/api/describe/:name", function (req, res) {
+  res.send(JSON.stringify(scrapers[req.params.name],null,2));
+});
+
+server.post("/api/exec/:name", function (req, res) {
+  res.send(JSON.stringify(scrapers[req.params.name],null,2));
 });
 
 server.use('/dashboard', express.static('./dist'));
