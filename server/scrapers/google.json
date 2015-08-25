@@ -1,0 +1,12 @@
+{
+  "url": "https://www.google.com/search",
+  "submit": {
+    "input": {
+      "q": "tigers"
+    },
+    "button": "button.lsb",
+    "val": {
+      "links": [".r > a@href"]
+    }
+  }
+}
